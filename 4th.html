@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Politician Votes</title>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+      class Politician {
+        constructor(name, voteCount) {
+          this.name = name;
+          this.voteCount = voteCount;
+        }
+      }
+
+      class PoliticianList extends React.Component {
+        render() {
+          const { politicians } = this.props;
+
+          return (
+            <div>
+              <h2>Politicians</h2>
+              <ul>
+                {politicians.map((politician, index) => (
+                  <li key={index}>
+                    {politician.name} - Votes: {politician.voteCount}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        }
+      }
+
+      class PoliticianForm extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            politicians: [],
+            politicianName: "",
+            voteCount: 0,
+          };
+        }
+
+        handleNameChange = (event) => {
+          this.setState({ politicianName: event.target.value });
+        };
+
+        handleVoteCountChange = (event) => {
+          this.setState({ voteCount: parseInt(event.target.value) });
+        };
+
+        handleSubmit = (event) => {
+          event.preventDefault();
+          const { politicians, politicianName, voteCount } = this.state;
+          const politician = new Politician(politicianName, voteCount);
+          this.setState({
+            politicians: [...politicians, politician],
+            politicianName: "",
+            voteCount: 0,
+          });
+        };
+
+        render() {
+          const { politicians, politicianName, voteCount } = this.state;
+
+          return (
+            <div>
+              <h2>Add Politician</h2>
+              <form onSubmit={this.handleSubmit}>
+                <input
+                  type="text"
+                  value={politicianName}
+                  onChange={this.handleNameChange}
+                  placeholder="Politician Name"
+                  required
+                />
+                <input
+                  type="number"
+                  value={voteCount}
+                  onChange={this.handleVoteCountChange}
+                  placeholder="Vote Count"
+                  required
+                />
+                <button type="submit">Add</button>
+              </form>
+              <PoliticianList politicians={politicians} />
+            </div>
+          );
+        }
+      }
+
+      ReactDOM.render(<PoliticianForm />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
